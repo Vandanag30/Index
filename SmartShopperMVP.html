@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartShopper MVP</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 1.5rem;
+}
+
+.info-box {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.info-box h2 {
+    margin-bottom: 15px;
+}
+
+.info-box ul {
+    line-height: 2;
+    padding-left: 20px;
+}
+
+.main-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.welcome-text {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-primary:hover {
+    opacity: 0.95;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    font-size: 1rem;
+}
+
+.item-input-group {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    gap: 12px;
+}
+
+.add-item-btn {
+    background: #10b981;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.empty-list {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+}
+
+.store-card {
+    background: #f9fafb;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.store-card:hover {
+    transform: translateY(-3px);
+}
+
+.store-card.best {
+    border: 3px solid #f59e0b;
+}
+
+.store-card.selected {
+    border: 3px solid #10b981;
+}
+
+.store-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.store-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.total-cost {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.badge {
+    display: inline-block;
+    background: #f59e0b;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-top: 8px;
+}
+
+.item-breakdown {
+    margin-top: 20px;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.success-box {
+    text-align: center;
+    padding: 40px;
+}
+
+.success-box h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #10b981;
+}
+
+.savings-banner {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>🛒 SmartShopper</h1>
+    <p class="tagline">
+        Find the cheapest complete grocery basket near you
+    </p>
+</header>
+
+<div class="info-box">
+    <h2>Why SmartShopper?</h2>
+
+    <ul>
+        <li>Compare total grocery basket cost</li>
+        <li>Reduce weekly grocery spending</li>
+        <li>Save time across multiple store apps</li>
+        <li>Find the best overall value instantly</li>
+    </ul>
+</div>
+
+<div id="groceryListScreen" class="screen active">
+
+<div class="main-card">
+
+<div class="user-header">
+    <div class="welcome-text">
+        Smart Grocery Basket Optimizer
+    </div>
+
+    <button class="btn-secondary">
+        Save My Lists
+    </button>
+</div>
+
+<h2 style="margin-bottom:20px;">
+    Create Your Grocery List
+</h2>
+
+<div class="form-group">
+
+<label>Add Grocery Items</label>
+
+<div class="item-input-group">
+    <input
+        type="text"
+        id="newItem"
+        placeholder="Milk, Bread, Eggs..."
+    >
+
+    <input
+        type="number"
+        id="itemQuantity"
+        min="1"
+        value="1"
+    >
+
+    <button class="add-item-btn" onclick="addItem()">
+        Add
+    </button>
+</div>
+
+</div>
+
+<div id="itemsList"></div>
+
+<button class="btn-primary" onclick="compareStores()">
+    Compare Store Prices
+</button>
+
+</div>
+</div>
+
+<div id="storeSelectionScreen" class="screen">
+
+<div class="main-card">
+
+<div class="user-header">
+
+<div class="welcome-text">
+    Best Store Options
+</div>
+
+<button class="btn-secondary" onclick="backToList()">
+    Back
+</button>
+
+</div>
+
+<div id="savingsBanner"></div>
+
+<div id="storeResults"></div>
+
+<button
+    id="continueBtn"
+    class="btn-primary"
+    onclick="completeOrder()"
+    disabled
+>
+    Continue to Store
+</button>
+
+</div>
+</div>
+
+<div id="successScreen" class="screen">
+
+<div class="main-card">
+
+<div class="success-box">
+
+<h2>Best Grocery Option Found!</h2>
+
+<p style="font-size:1.2rem;">
+    SmartShopper found the lowest-cost grocery basket
+    for your shopping trip.
+</p>
+
+<div style="margin-top:25px; font-size:1.4rem;">
+    Savings Optimized Successfully ✅
+</div>
+
+<button
+    class="btn-primary"
+    onclick="startNewOrder()"
+>
+    Start New Comparison
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="info-box" style="margin-top:40px;">
+<h2>Product Thinking</h2>
+
+<p style="line-height:1.8;">
+Most grocery apps optimize individual item discounts.
+SmartShopper instead optimizes total basket cost,
+which better reflects how users actually shop.
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+let groceryItems = [];
+
+let selectedStore = null;
+
+let storeComparison = [];
+
+const stores = [
+    { name: "Walmart", distance: 3.2 },
+    { name: "Target", distance: 4.5 },
+    { name: "Whole Foods", distance: 2.8 },
+    { name: "Trader Joe's", distance: 5.1 },
+    { name: "Stop & Shop", distance: 1.9 }
+];
+
+const priceDatabase = {
+    milk: {
+        "Walmart": 3.49,
+        "Target": 3.79,
+        "Whole Foods": 5.99,
+        "Trader Joe's": 3.99,
+        "Stop & Shop": 3.89
+    },
+
+    bread: {
+        "Walmart": 2.49,
+        "Target": 2.79,
+        "Whole Foods": 4.49,
+        "Trader Joe's": 2.99,
+        "Stop & Shop": 2.69
+    },
+
+    eggs: {
+        "Walmart": 4.29,
+        "Target": 4.49,
+        "Whole Foods": 6.99,
+        "Trader Joe's": 3.99,
+        "Stop & Shop": 4.19
+    },
+
+    apples: {
+        "Walmart": 3.49,
+        "Target": 3.79,
+        "Whole Foods": 5.49,
+        "Trader Joe's": 2.99,
+        "Stop & Shop": 3.69
+    }
+};
+
+function showScreen(screenId) {
+
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    document.getElementById(screenId).classList.add('active');
+}
+
+function renderItems() {
+
+    const itemsList = document.getElementById('itemsList');
+
+    if (groceryItems.length === 0) {
+
+        itemsList.innerHTML = `
+            <div class="empty-list">
+
+                <h3>No grocery items yet</h3>
+
+                <p style="margin-top:10px;">
+                    Try adding:
+                </p>
+
+                <div style="margin-top:15px; line-height:2;">
+                    🥛 Milk<br>
+                    🍞 Bread<br>
+                    🥚 Eggs<br>
+                    🍎 Apples
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    itemsList.innerHTML = groceryItems.map((item, index) => `
+
+        <div class="store-card">
+
+            <div class="item-row">
+
+                <div>
+                    ${item.name}
+                    (x${item.quantity})
+                </div>
+
+                <button
+                    onclick="removeItem(${index})"
+                    class="btn-secondary"
+                >
+                    Remove
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join('');
+}
+
+function addItem() {
+
+    const input = document.getElementById('newItem');
+
+    const quantityInput =
+        document.getElementById('itemQuantity');
+
+    const item = input.value.trim().toLowerCase();
+
+    const quantity =
+        parseInt(quantityInput.value) || 1;
+
+    if (!item) {
+        return;
+    }
+
+    groceryItems.push({
+        name: item,
+        quantity: quantity
+    });
+
+    input.value = '';
+
+    quantityInput.value = 1;
+
+    renderItems();
+}
+
+function removeItem(index) {
+
+    groceryItems.splice(index, 1);
+
+    renderItems();
+}
+
+function compareStores() {
+
+    if (groceryItems.length === 0) {
+        return;
+    }
+
+    storeComparison = stores.map(store => {
+
+        let total = 0;
+
+        const itemPrices = {};
+
+        groceryItems.forEach(item => {
+
+            const price =
+                priceDatabase[item.name] &&
+                priceDatabase[item.name][store.name]
+                    ? priceDatabase[item.name][store.name]
+                    : (Math.random() * 5 + 2).toFixed(2);
+
+            const itemTotal =
+                parseFloat(price) * item.quantity;
+
+            itemPrices[item.name] = {
+                price: parseFloat(price),
+                total: itemTotal
+            };
+
+            total += itemTotal;
+        });
+
+        return {
+            ...store,
+            total: total.toFixed(2),
+            items: itemPrices
+        };
+    });
+
+    storeComparison.sort(
+        (a, b) => parseFloat(a.total) - parseFloat(b.total)
+    );
+
+    renderSavingsBanner();
+
+    displayStores();
+
+    showScreen('storeSelectionScreen');
+}
+
+function renderSavingsBanner() {
+
+    const cheapest = storeComparison[0];
+
+    const expensive =
+        storeComparison[storeComparison.length - 1];
+
+    const savings = (
+        parseFloat(expensive.total) -
+        parseFloat(cheapest.total)
+    ).toFixed(2);
+
+    document.getElementById('savingsBanner').innerHTML = `
+
+        <div class="savings-banner">
+
+            💰 Save $${savings}
+            by shopping at
+            ${cheapest.name}
+
+        </div>
+
+    `;
+}
+
+function displayStores() {
+
+    const storeResults =
+        document.getElementById('storeResults');
+
+    storeResults.innerHTML =
+        storeComparison.map((store, index) => {
+
+        let recommendation = '';
+
+        if (index === 0) {
+
+            recommendation =
+                'Lowest total basket cost';
+
+        } else if (store.distance < 3) {
+
+            recommendation =
+                'Closest store to your location';
+
+        } else {
+
+            recommendation =
+                'Good balance of price and convenience';
+        }
+
+        return `
+
+        <div
+            class="store-card ${index === 0 ? 'best' : ''}"
+            onclick="selectStore(${index})"
+        >
+
+            <div class="store-header">
+
+                <div>
+
+                    <div class="store-name">
+                        ${store.name}
+                    </div>
+
+                    ${
+                        index === 0
+                        ? '<div class="badge">BEST VALUE</div>'
+                        : ''
+                    }
+
+                    <div style="margin-top:10px;">
+                        ${store.distance} miles away
+                    </div>
+
+                    <div style="
+                        margin-top:10px;
+                        color:#10b981;
+                        font-weight:bold;
+                    ">
+                        ⭐ ${recommendation}
+                    </div>
+
+                </div>
+
+                <div class="total-cost">
+                    $${store.total}
+                </div>
+
+            </div>
+
+            <div class="item-breakdown">
+
+                ${groceryItems.map(item => `
+
+                    <div class="item-row">
+
+                        <span>
+                            ${item.name}
+                            (x${item.quantity})
+                        </span>
+
+                        <span>
+
+                            $${store.items[item.name]
+                                .price.toFixed(2)}
+
+                        </span>
+
+                    </div>
+
+                `).join('')}
+
+            </div>
+
+        </div>
+
+        `;
+    }).join('');
+}
+
+function selectStore(index) {
+
+    selectedStore = storeComparison[index];
+
+    document.querySelectorAll('.store-card')
+        .forEach((card, i) => {
+
+        if (i === index) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    });
+
+    document.getElementById('continueBtn')
+        .disabled = false;
+}
+
+function completeOrder() {
+
+    showScreen('successScreen');
+}
+
+function backToList() {
+
+    showScreen('groceryListScreen');
+}
+
+function startNewOrder() {
+
+    groceryItems = [];
+
+    selectedStore = null;
+
+    renderItems();
+
+    showScreen('groceryListScreen');
+}
+
+renderItems();
+
+</script>
+
+</body>
+</html>
